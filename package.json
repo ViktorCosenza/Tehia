@@ -1,0 +1,30 @@
+{
+  "name": "olokinho-meu-api",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "dev": "nodemon index.js",
+    "start": "node index.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://gitlab.com/dtdsouzanave/olokinho-meu-api.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://gitlab.com/dtdsouzanave/olokinho-meu-api/issues"
+  },
+  "homepage": "https://gitlab.com/dtdsouzanave/olokinho-meu-api#readme",
+  "dependencies": {
+    "koa": "^2.7.0",
+    "koa-bodyparser": "^4.2.1",
+    "koa-router": "^7.4.0"
+  },
+  "devDependencies": {
+    "nodemon": "^1.19.1",
+    "standard": "^12.0.1"
+  }
+}
