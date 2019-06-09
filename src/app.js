@@ -13,7 +13,7 @@ router.get('/grid/generate', (ctx) => {
 })
 
 router.post('/grid/calc', (ctx) => {
-  ctx.body = util.generateGrid(ctx.request.body.grid)
+  ctx.body = util.calcTimes(ctx.request.body.quarter)
 })
 
 app.use(router.routes())
