@@ -1,3 +1,5 @@
+const fs = require('fs')
+const path = require('path')
 /* const generateLights = () => {
   const cars = Math.floor(Math.random() * 10) + 1
   const vias = Math.floor(Math.random() * 3) + 1
@@ -12,21 +14,16 @@
   }
 } */
 
-const generateLights = (imgPath) => {
-  const spawn = require('child_process').spawn
-  const pythonProcess = spawn('python', ['./Yolo/get_vehicles.py', `--image_file ${imgPath}`])
-
+const generateLights = (cars) => {
   const vias = Math.floor(Math.random() * 3) + 1
   let limiar = Math.floor(Math.random() * 3) + 1
 
-  pythonProcess.stdout.on('data', (cars) => {
-    if (cars / vias > limiar) { limiar = Math.floor(cars / vias) + 1 }
-    return {
-      cars: cars,
-      vias: vias,
-      limiar: limiar
-    }
-  })
+  if (cars / vias > limiar) { limiar = Math.floor(cars / vias) + 1 }
+  return {
+    cars: cars,
+    vias: vias,
+    limiar: limiar
+  }
 }
 
 const calcThreshold = (light) => {
@@ -34,22 +31,21 @@ const calcThreshold = (light) => {
 }
 
 module.exports = {
-
   generateGrid: () => {
     const res = []
-    for (let i = 0; i < 12; ++i) {
+    const vehicleCount = fs.readFileSync(path.join(__dirname, './vehicle_count.csv')).toString().split(',')
+    
+    for (const count of vehicleCount) {
       let esquina = {
-        n1: generateLights(),
-        n2: generateLights()
+        n1: generateLights(parseInt(count) + 2),
+        n2: generateLights(Math.floor(parseInt(count) * 2) + 2)
       }
-
       res.push(esquina)
     }
-
     return { grid: res }
   },
 
-  calcTimes: (quarter) => {
+  /* calcTimes: (quarter) => {
     let signal
     let ticks
     let threshold = {
@@ -65,5 +61,26 @@ module.exports = {
       n: signal,
       ticks: ticks
     }
+  }
+ */
+  calcTimes: (city) => {
+    let signal
+    let ticks
+    const res = []
+    city.map((quarter) => { 
+      let threshold = {
+        n1: calcThreshold(quarter.n1),
+        n2: calcThreshold(quarter.n2)
+      }
+  
+      threshold.n1 / quarter.n1.limiar > threshold.n2 / quarter.n2.limiar ? signal = 1 : signal = 2
+  
+      signal === 1 ? ticks = threshold.n1 + 1 : ticks = threshold.n2 + 1
+      res.push({
+        n: signal,
+        ticks: ticks 
+      }) 
+    })
+    return res
   }
 }
