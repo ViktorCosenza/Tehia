@@ -1,4 +1,4 @@
-const generateLights = () => {
+/* const generateLights = () => {
   const cars = Math.floor(Math.random() * 10) + 1
   const vias = Math.floor(Math.random() * 3) + 1
   let limiar = Math.floor(Math.random() * 3) + 1
@@ -10,6 +10,23 @@ const generateLights = () => {
     vias: vias,
     limiar: limiar
   }
+} */
+
+const generateLights = (imgPath) => {
+  const spawn = require('child_process').spawn
+  const pythonProcess = spawn('python', ['./Yolo/get_vehicles.py', `--image_file ${imgPath}`])
+
+  const vias = Math.floor(Math.random() * 3) + 1
+  let limiar = Math.floor(Math.random() * 3) + 1
+
+  pythonProcess.stdout.on('data', (cars) => {
+    if (cars / vias > limiar) { limiar = Math.floor(cars / vias) + 1 }
+    return {
+      cars: cars,
+      vias: vias,
+      limiar: limiar
+    }
+  })
 }
 
 const calcThreshold = (light) => {
